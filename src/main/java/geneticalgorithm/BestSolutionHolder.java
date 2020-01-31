@@ -2,7 +2,7 @@ package geneticalgorithm;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-class BestSolutionHolder implements Cloneable{
+class BestSolutionHolder{
 
     private Solution bestSolution;
     private final ReentrantReadWriteLock lock;

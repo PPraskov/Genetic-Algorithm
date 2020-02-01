@@ -2,25 +2,24 @@ package executorservice;
 
 import java.util.concurrent.Callable;
 
-public class SingleExecution<R> extends Thread{
+class SingleExecution<R> extends Thread{
 
-    private R result;
     private Callable<R> callable;
-
-    public SingleExecution(Callable<R> callable) {
+    private Result<R> results;
+    SingleExecution(Callable<R> callable,Result<R> results,String name) {
+        super(name);
         this.callable = callable;
+        this.results = results;
     }
 
     @Override
     public void run() {
+        Thread.setDefaultUncaughtExceptionHandler(new CustomUncaughtExceptionHandler());
         try {
-            this.result = this.callable.call();
-        } catch (Exception e) {
+            this.results.submitResult(this.callable.call());
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public R getResult() {
-        return result;
-    }
 }

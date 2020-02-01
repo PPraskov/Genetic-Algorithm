@@ -1,6 +1,6 @@
 package geneticalgorithm;
 
-import executorservice.SingleExecution;
+import executorservice.ExecutorManager;
 
 import java.util.concurrent.Callable;
 
@@ -20,14 +20,12 @@ public class GeneticAlgorithmManager<R,T> {
     public void start(){
         this.bestSolutionHolder = new BestSolutionHolder(this.configuration.getInitialSolution());
         Callable<R> callable = generateCallable();
-        SingleExecution<R> execution = new SingleExecution<>(callable);
-        execution.start();
-        try {
-            execution.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(execution.getResult());
+        ExecutorManager<R> executorManager = ExecutorManager.getManager(
+                callable,
+                this.configuration.getTarget(),
+                this.configuration.getCompareResults());
+        executorManager.startComputation();
+        executorManager.killManager();
     }
 
     private Callable<R> generateCallable(){
@@ -40,5 +38,12 @@ public class GeneticAlgorithmManager<R,T> {
                 configuration.getMutation(),
                 configuration.getCrossoverChance(),
                 configuration.getMutationChance());
+    }
+
+    public T getBestSolution(){
+        return (T)this.bestSolutionHolder.getBestSolution().getSolution();
+    }
+    public R getBestSolutionFitness(){
+        return (R)this.bestSolutionHolder.getBestSolution().getFitness();
     }
 }

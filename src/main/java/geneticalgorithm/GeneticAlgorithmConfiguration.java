@@ -11,6 +11,7 @@ public class GeneticAlgorithmConfiguration<R, T> {
     private final CompareSolutions<R> compareSolutions;
     private final Crossover<T> crossover;
     private final Mutation<T> mutation;
+    private final CompareResults<R> compareResults;
     private final int crossoverChance;
     private final int mutationChance;
 
@@ -22,6 +23,7 @@ public class GeneticAlgorithmConfiguration<R, T> {
                                          CompareSolutions<R> compareSolutions,
                                          Crossover<T> crossover,
                                          Mutation<T> mutation,
+                                         CompareResults<R> compareResults,
                                          int crossoverChance,
                                          int mutationChance) {
         this.initialSolution = initialSolution;
@@ -31,6 +33,7 @@ public class GeneticAlgorithmConfiguration<R, T> {
         this.compareSolutions = compareSolutions;
         this.crossover = crossover;
         this.mutation = mutation;
+        this.compareResults = compareResults;
         this.crossoverChance = crossoverChance;
         this.mutationChance = mutationChance;
         setFitness();
@@ -74,5 +77,9 @@ public class GeneticAlgorithmConfiguration<R, T> {
 
     int getCrossoverChance() {
         return crossoverChance;
+    }
+
+    CompareResults<R> getCompareResults() {
+        return compareResults;
     }
 }

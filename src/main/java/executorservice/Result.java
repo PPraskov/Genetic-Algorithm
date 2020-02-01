@@ -19,33 +19,66 @@ class Result<R> {
 
     R getResult() {
         R result = null;
-        synchronized (this.notEmpty) {
+        boolean condition = false;
+        synchronized (this.resultList) {
             if (this.resultList.isEmpty()) {
+                condition = true;
+            }
+        }
+        if (condition) {
+            synchronized (this.notEmpty) {
                 try {
-                    this.notEmpty.wait(500);
+                    this.notEmpty.wait(1000L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-
         }
-        result = this.resultList.poll();
+        synchronized (this.resultList) {
+            result = this.resultList.poll();
+        }
+        synchronized (this.notFull) {
+            this.notFull.notify();
+        }
+
 
         return result;
     }
 
     void submitResult(R result) {
-        synchronized (this.notEmpty){
-            boolean added = true;
+        boolean condition = false;
+        synchronized (this.resultList) {
+            if (this.resultList.size() >= this.capacity) {
+                condition = true;
+            }
+        }
+        if (condition) {
+            synchronized (this.notFull) {
+                try {
+                    this.notFull.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        boolean added = true;
+        synchronized (this.resultList) {
             while (added) {
                 added = !this.resultList.offer(result);
             }
-            this.notEmpty.notifyAll();
+        }
+        synchronized (this.notEmpty) {
+            this.notEmpty.notify();
         }
     }
 
-    int getSize(){
-        return this.resultList.size();
+
+    int getSize() {
+        int result;
+        synchronized (this.resultList){
+            result = this.resultList.size();
+        }
+        return result;
     }
 }
 

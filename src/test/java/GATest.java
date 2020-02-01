@@ -16,10 +16,10 @@ public class GATest {
     @Test
     public void start() throws InterruptedException {
         List<Integer> initialSolution = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             initialSolution.add(0);
         }
-        Integer targetInt = 1000;
+        Integer targetInt = 500;
         Solution<Integer, List<Integer>> solution = new Solution<>(initialSolution);
         Target<Integer> target = new Target<>(targetInt);
         CalculateFitness<Integer, List<Integer>> calculateFitness = (x) -> {
@@ -33,7 +33,7 @@ public class GATest {
             Random random = new Random();
             List<Integer> integers = new ArrayList<>();
             for (int i = 0; i < initialSolution.size(); i++) {
-                integers.add(random.nextInt(10)+1);
+                integers.add(random.nextInt(10) + 1);
             }
             return integers;
         };
@@ -42,7 +42,7 @@ public class GATest {
             List<Integer> result = new ArrayList<>();
             for (int i = 0; i < initialSolution.size(); i++) {
                 if (random.nextInt(100) < chance) {
-                    result.add(random.nextInt(10)+1);
+                    result.add(random.nextInt(10) + 1);
                     continue;
                 }
                 result.add(x1.get(i));
@@ -76,11 +76,11 @@ public class GATest {
             }
             return 0;
         };
-        CompareResults<Integer> compareResults = (x1,x2)->{
-            if (x1 > x2){
+        CompareResults<Integer> compareResults = (x1, x2) -> {
+            if (x1 > x2) {
                 return 1;
             }
-            if (x1 < x2){
+            if (x1 < x2) {
                 return -1;
             }
             return 0;
@@ -88,14 +88,14 @@ public class GATest {
         GeneticAlgorithmConfiguration<Integer, List<Integer>> configuration =
                 new GeneticAlgorithmConfiguration<>(
                         solution, target, solutionGenerator,
-                        calculateFitness,compareSolutions,
-                        crossover,mutation,compareResults,50,20);
-        GeneticAlgorithmManager<Integer,List<Integer>> manager = new GeneticAlgorithmManager<>(configuration);
+                        calculateFitness, compareSolutions,
+                        crossover, mutation, compareResults, 20, 75);
+        GeneticAlgorithmManager<Integer, List<Integer>> manager = new GeneticAlgorithmManager<>(configuration);
         manager.start();
         List<Integer> bestSolution = manager.getBestSolution();
         Integer bestSolutionFitness = manager.getBestSolutionFitness();
         boolean passed = false;
-        if (bestSolutionFitness >= target.getTarget()){
+        if (bestSolutionFitness >= target.getTarget()) {
             passed = true;
         }
         System.out.println(String.join(",", bestSolution.toString()));
